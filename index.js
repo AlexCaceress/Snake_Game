@@ -1,5 +1,6 @@
 const canvas = document.getElementById('myCanvas');
 const context = canvas.getContext('2d');
+let appleVal = false;
 
 const rows = 20;
 const columns = 40;
@@ -10,11 +11,17 @@ for(let row = 0; row < board.length; row++){
     board[row] = new Array(columns).fill(0)
 }
 
-board[19][39] = 1;
+const snake = {
+    position : {x : 5, y : 5},
+    shape : [
+        [1]
+    ]
+}
+
 
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth - 160;
+    canvas.height = window.innerHeight - 80;
     draw();
 }
 
@@ -29,8 +36,8 @@ function update(){
 function draw() {
     const blockWidth = canvas.width / columns;
     const blockHeight = canvas.height / rows;
-    
-    context.fillStyle = "#73C6B6"
+
+    context.fillStyle = "#52BE80"
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     //veure cuadricula
@@ -41,6 +48,8 @@ function draw() {
     //         context.strokeRect(x * blockWidth, y * blockHeight, blockWidth, blockHeight);
     //     }
     // }
+
+    randomApple();
 
     board.forEach((row, y) => {
 
@@ -57,6 +66,68 @@ function draw() {
 
     });
 
+    snake.shape.forEach((row, y) => {
+
+        row.forEach((value, x) => {
+            
+            if(value === 1){
+
+                context.fillStyle = "green";
+                context.fillRect((x + snake.position.x) * blockWidth, (y + snake.position.y) * blockHeight, blockWidth, blockHeight);
+
+            }
+
+        });
+
+    });
+
+
+}
+
+document.addEventListener("keydown", (event) => {
+
+    if(event.key === "ArrowLeft") snake.position.x--;
+    if(event.key === "ArrowRight") snake.position.x++;
+    if(event.key === "ArrowDown") snake.position.y++;
+    if(event.key === "ArrowUp") snake.position.y--;
+    
+    checkOutsideMap();
+    playerEatApple();
+
+});
+
+function checkOutsideMap(){
+
+    if(snake.position.x >= columns){
+        snake.position.x = 0;
+    }
+    else if(snake.position.x < 0){
+        snake.position.x = columns - 1;
+    }
+    else if(snake.position.y >= rows){
+        snake.position.y = 0;
+    }
+    else if(snake.position.y < 0){
+        snake.position.y = rows - 1;
+    }
+
+}
+
+function randomApple(){
+
+    if(!appleVal){
+        board[Math.floor(Math.random() * board.length)][Math.floor(Math.random() * board[0].length)] = 1;
+        appleVal = true;
+    }
+
+}
+
+function playerEatApple(){
+
+    if(board[snake.position.y][snake.position.x] === 1){
+        board[snake.position.y][snake.position.x] = 0;
+        appleVal = false;
+    }
 
 }
 

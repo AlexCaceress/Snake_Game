@@ -1,5 +1,22 @@
-body{
+body, html {
     margin: 0 !important;
     padding: 0 !important;
-    box-sizing: border-box;
+    overflow: hidden;
+    font-family: "Calibri";
+}
+
+#myCanvas
+{
+    display: block;
+    margin: 0 auto;
+    border: 10px solid #AF601A;
+    border-radius: 25px;
+}
+
+span{
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    display: block;
+    padding: 5px;
 }
