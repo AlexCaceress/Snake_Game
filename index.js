@@ -1,6 +1,12 @@
 const canvas = document.getElementById('myCanvas');
 const context = canvas.getContext('2d');
-let appleVal = false;
+
+const DIRECTIONS = {
+    LEFT : "ArrowLeft",
+    RIGHT : "ArrowRight",
+    DOWN : "ArrowDown",
+    UP : "ArrowUp",
+}
 
 const rows = 20;
 const columns = 40;
@@ -10,6 +16,8 @@ const board = new Array(rows).fill([]);
 for(let row = 0; row < board.length; row++){
     board[row] = new Array(columns).fill(0)
 }
+
+randomApple();
 
 const snake = {
     position : {x : 5, y : 5},
@@ -28,7 +36,20 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-function update(){
+let timeMoveSnake = 0;
+let lastTime = 0;
+
+function update(time = 0){
+
+    let deltaTime = time - lastTime;
+    lastTime = time;
+    timeMoveSnake += deltaTime
+
+    if(timeMoveSnake > 100){
+        moveSnake();
+        timeMoveSnake = 0;
+    }
+
     draw()
     window.requestAnimationFrame(update)
 }
@@ -39,17 +60,6 @@ function draw() {
 
     context.fillStyle = "#52BE80"
     context.fillRect(0, 0, canvas.width, canvas.height);
-
-    //veure cuadricula
-
-    // for (let y = 0; y < rows; y++) {
-    //     for (let x = 0; x < columns; x++) {
-    //         context.fillStyle = "red";
-    //         context.strokeRect(x * blockWidth, y * blockHeight, blockWidth, blockHeight);
-    //     }
-    // }
-
-    randomApple();
 
     board.forEach((row, y) => {
 
@@ -84,17 +94,21 @@ function draw() {
 
 }
 
+let directionSnake = "";
 document.addEventListener("keydown", (event) => {
-
-    if(event.key === "ArrowLeft") snake.position.x--;
-    if(event.key === "ArrowRight") snake.position.x++;
-    if(event.key === "ArrowDown") snake.position.y++;
-    if(event.key === "ArrowUp") snake.position.y--;
-    
-    checkOutsideMap();
-    playerEatApple();
-
+    directionSnake = event.key;
 });
+
+function moveSnake(){
+
+    if(directionSnake === DIRECTIONS.LEFT) snake.position.x--;
+    if(directionSnake === DIRECTIONS.RIGHT) snake.position.x++;
+    if(directionSnake === DIRECTIONS.DOWN) snake.position.y++;
+    if(directionSnake === DIRECTIONS.UP) snake.position.y--;
+
+    checkOutsideMap();
+    checkEatApple();
+}
 
 function checkOutsideMap(){
 
@@ -114,19 +128,14 @@ function checkOutsideMap(){
 }
 
 function randomApple(){
-
-    if(!appleVal){
-        board[Math.floor(Math.random() * board.length)][Math.floor(Math.random() * board[0].length)] = 1;
-        appleVal = true;
-    }
-
+    board[Math.floor(Math.random() * board.length)][Math.floor(Math.random() * board[0].length)] = 1;
 }
 
-function playerEatApple(){
+function checkEatApple(){
 
     if(board[snake.position.y][snake.position.x] === 1){
         board[snake.position.y][snake.position.x] = 0;
-        appleVal = false;
+        randomApple();
     }
 
 }
