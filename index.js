@@ -20,6 +20,7 @@ for (let row = 0; row < board.length; row++) {
 randomApple();
 
 const snake = [{x : 5, y : 5, direction : ""}]
+let directionSnake = "";
 
 function resizeCanvas() {
     canvas.width = window.innerWidth - 160;
@@ -39,7 +40,7 @@ function update(time = 0) {
     lastTime = time;
     timeMoveSnake += deltaTime
 
-    if (timeMoveSnake > 100) {
+    if (timeMoveSnake > 50) {
         moveSnake();
         timeMoveSnake = 0;
     }
@@ -80,16 +81,16 @@ function draw() {
 
 }
 
-let directionSnake = "";
 document.addEventListener("keydown", (event) => {
-    directionSnake = event.key;
+    directionSnake = (checkDirection(event.key) || snake.length === 1) ? event.key : directionSnake;
 });
 
 function moveSnake() {
 
-    for(let i = snake.length - 1; i > 0; i--){
+    for(let i = snake.length - 1; i >= 0; i--){
         
-        snake[i].direction = snake[i-1].direction;
+        // The player can only control the head of the snake with the keys, which is index 0. 
+        snake[i].direction = (i === 0) ? directionSnake : snake[i-1].direction;
 
         if (snake[i].direction === DIRECTIONS.LEFT){
             snake[i].x--;
@@ -104,26 +105,13 @@ function moveSnake() {
             snake[i].y--;
         }
 
+
         
-    }
-
-    snake[0].direction = directionSnake;
-
-    if (directionSnake === DIRECTIONS.LEFT){
-        snake[0].x--;
-    }
-    if (directionSnake === DIRECTIONS.RIGHT){
-        snake[0].x++;
-    }
-    if (directionSnake === DIRECTIONS.DOWN){
-        snake[0].y++;
-    }
-    if (directionSnake === DIRECTIONS.UP){
-        snake[0].y--;
     }
 
     checkOutsideMap();
     checkEatApple();
+    checkCollisions();
 
 }
 
@@ -174,6 +162,30 @@ function checkEatApple() {
         }
 
         randomApple();
+
+    }
+
+}
+
+function checkDirection(direction){
+
+    if(direction === DIRECTIONS.DOWN && directionSnake !== DIRECTIONS.UP) return true;
+    if(direction === DIRECTIONS.LEFT && directionSnake !== DIRECTIONS.RIGHT) return true;
+    if(direction === DIRECTIONS.RIGHT && directionSnake !== DIRECTIONS.LEFT) return true;
+    if(direction === DIRECTIONS.UP && directionSnake !== DIRECTIONS.DOWN) return true;
+
+    return false;
+
+}
+
+function checkCollisions(){
+
+    for(let i = 1; i < snake.length - 1; i++){
+
+        if(snake[0].x === snake[i].x && snake[0].y === snake[i].y){
+            alert("Game Over");
+            break;
+        }
 
     }
 
