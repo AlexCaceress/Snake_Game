@@ -10,7 +10,6 @@ const DIRECTIONS = {
 
 const rows = 20;
 const columns = 40;
-
 const board = new Array(rows).fill([]);
 
 for (let row = 0; row < board.length; row++) {
