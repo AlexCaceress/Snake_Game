@@ -1,6 +1,6 @@
-import { DIRECTIONS, ROWS, COLUMNS, START_POSITION_SNAKE} from "./constants";
-import { Snake } from "./types/Snake";
-import { Board } from "./types/Board";
+import { DIRECTIONS, ROWS, COLUMNS, START_POSITION_SNAKE} from "./constants.js";
+import Snake from "./types/Snake.js";
+import Board from "./types/Board.js";
 
 let snake = new Snake(START_POSITION_SNAKE);
 let board = new Board(ROWS, COLUMNS);
@@ -16,7 +16,7 @@ let playerDirection = "";
 window.addEventListener('resize', resizeCanvas);
 
 document.addEventListener("keydown", (event) => {
-    playerDirection = (validateDirection(event.key) || snake.body.length === 1) ? event.key : directionSnake;
+    playerDirection = (validateDirection(event.key) || snake.body.length === 1) ? event.key : playerDirection;
 });
 
 function resizeCanvas() {
@@ -69,6 +69,7 @@ function draw(){
 
 function validateDirection(direction){
 
+
     if(direction === DIRECTIONS.DOWN && playerDirection !== DIRECTIONS.UP) return true;
     if(direction === DIRECTIONS.LEFT && playerDirection !== DIRECTIONS.RIGHT) return true;
     if(direction === DIRECTIONS.RIGHT && playerDirection !== DIRECTIONS.LEFT) return true;
@@ -96,4 +97,5 @@ function checkEatApple(){
 }
 
 resizeCanvas();
+board.generateRandomApple()
 update();

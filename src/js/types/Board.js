@@ -1,4 +1,4 @@
-export class Board{
+export default class Board{
 
     rows = 0;
     columns = 0;

@@ -1,6 +1,6 @@
-import { DIRECTIONS, ROWS, COLUMNS } from "../constants";
+import { DIRECTIONS, ROWS, COLUMNS } from "../constants.js";
 
-export class Snake{
+export default class Snake{
 
     body = [];
 
@@ -22,7 +22,7 @@ export class Snake{
 
     moveSnake(playerDirection){
         
-        for(let i = this.body - 1; i >= 0; i--){
+        for(let i = this.body.length - 1; i >= 0; i--){
 
             this.body[i].direction = (i === 0) ? playerDirection : this.body[i-1].direction;
 
@@ -41,8 +41,8 @@ export class Snake{
     
         }
     
-        checkOutsideBoard();
-        checkCollisions();
+        this.checkOutsideBoard();
+        this.checkCollisions();
         // checkEatApple();    
 
     }
